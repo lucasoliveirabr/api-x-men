@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import type { Candidate } from "@/api/candidate/candidateModel";
+import type { Candidate, CandidateDto } from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 // import { DatabaseService } from "@common/database/databaseService";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -11,6 +11,17 @@ export class CandidateService {
 
   constructor(repository: CandidateRepository = new CandidateRepository()) {
     this.candidateRepository = repository;
+  }
+
+  async create(candidateToBeCreated: CandidateDto): Promise<ServiceResponse<CandidateDto | null>> {
+    try {
+      const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
+      return ServiceResponse.success<CandidateDto>("Candidate created", candidate);
+    } catch (ex) {
+      const errorMessage = `Error creating candidate ${candidateToBeCreated}:, ${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return ServiceResponse.failure("An error occurred while creating candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findAll(): Promise<ServiceResponse<Candidate[] | null>> {

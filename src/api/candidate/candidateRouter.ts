@@ -13,12 +13,19 @@ export const candidateRouter: Router = express.Router();
 candidateRegistry.register("Candidate", CandidateSchema);
 
 candidateRegistry.registerPath({
+  method: "post",
+  path: "/candidates",
+  tags: ["Candidate"],
+  responses: createApiResponse(z.array(CandidateSchema), "Success"),
+});
+candidateRouter.post("/", candidateController.createCandidate);
+
+candidateRegistry.registerPath({
   method: "get",
   path: "/candidates",
   tags: ["Candidate"],
   responses: createApiResponse(z.array(CandidateSchema), "Success"),
 });
-
 candidateRouter.get("/", candidateController.getCandidates);
 
 candidateRegistry.registerPath({
@@ -28,5 +35,4 @@ candidateRegistry.registerPath({
   request: { params: GetCandidateSchema.shape.params },
   responses: createApiResponse(CandidateSchema, "Success"),
 });
-
 candidateRouter.get("/:id", validateRequest(GetCandidateSchema), candidateController.getCandidate);
