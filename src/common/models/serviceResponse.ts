@@ -1,4 +1,3 @@
-import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 
 export class ServiceResponse<T = null> {
@@ -14,11 +13,11 @@ export class ServiceResponse<T = null> {
     this.statusCode = statusCode;
   }
 
-  static success<T>(message: string, responseObject: T, statusCode: number = StatusCodes.OK) {
+  static success<T>(message: string, responseObject: T, statusCode: number) {
     return new ServiceResponse(true, message, responseObject, statusCode);
   }
 
-  static failure<T>(message: string, responseObject: T, statusCode: number = StatusCodes.BAD_REQUEST) {
+  static failure<T>(message: string, responseObject: T, statusCode: number) {
     return new ServiceResponse(false, message, responseObject, statusCode);
   }
 }

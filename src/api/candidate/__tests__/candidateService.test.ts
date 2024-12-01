@@ -50,7 +50,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.OK);
       expect(result.success).toBeTruthy();
-      expect(result.message).equals("Candidates found");
+      expect(result.message).equals("All candidates successfully found.");
       expect(result.responseObject).toEqual(mockCandidates);
     });
 
@@ -64,7 +64,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals("No candidates found");
+      expect(result.message).equals("No candidates found.");
       expect(result.responseObject).toBeNull();
     });
 
@@ -78,7 +78,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals("An error occurred while retrieving candidates.");
+      expect(result.message).equals("An error occurred while retrieving all candidates.");
       expect(result.responseObject).toBeNull();
     });
   });
@@ -96,7 +96,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.OK);
       expect(result.success).toBeTruthy();
-      expect(result.message).equals("Candidate found");
+      expect(result.message).equals("Candidate successfully found.");
       expect(result.responseObject).toEqual(mockCandidate);
     });
 
@@ -111,7 +111,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals("Candidate not found");
+      expect(result.message).equals("Candidate not found.");
       expect(result.responseObject).toBeNull();
     });
 
@@ -126,7 +126,7 @@ describe("candidateService", () => {
       // Assert
       expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals("An error occurred while finding candidate.");
+      expect(result.message).equals("An error occurred while finding the candidate.");
       expect(result.responseObject).toBeNull();
     });
   });

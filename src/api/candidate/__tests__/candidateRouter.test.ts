@@ -16,7 +16,7 @@ describe("Candidate API Endpoints", () => {
       // Assert
       expect(response.statusCode).toEqual(StatusCodes.OK);
       expect(responseBody.success).toBeTruthy();
-      expect(responseBody.message).toContain("Candidates found");
+      expect(responseBody.message).toContain("All candidates successfully found.");
       expect(responseBody.responseObject.length).toEqual(candidates.length);
       responseBody.responseObject.forEach((candidate, index) => compareCandidates(candidates[index] as Candidate, candidate));
     });
@@ -35,7 +35,7 @@ describe("Candidate API Endpoints", () => {
       // Assert
       expect(response.statusCode).toEqual(StatusCodes.OK);
       expect(responseBody.success).toBeTruthy();
-      expect(responseBody.message).toContain("Candidate found");
+      expect(responseBody.message).toContain("Candidate successfully found.");
       if (!expectedCandidate) throw new Error("Invalid test data: expectedCandidate is undefined");
       compareCandidates(expectedCandidate, responseBody.responseObject);
     });
@@ -51,7 +51,7 @@ describe("Candidate API Endpoints", () => {
       // Assert
       expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toContain("Candidate not found");
+      expect(responseBody.message).toContain("Candidate not found.");
       expect(responseBody.responseObject).toBeNull();
     });
 
@@ -64,7 +64,7 @@ describe("Candidate API Endpoints", () => {
       // Assert
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toContain("Invalid input");
+      expect(responseBody.message).toContain("Invalid input: ID must be a numeric value, ID must be a positive number.");
       expect(responseBody.responseObject).toBeNull();
     });
   });

@@ -1,4 +1,4 @@
-import type { Candidate, CandidateDto } from "@/api/candidate/candidateModel";
+import type { Candidate, CreateCandidateDto } from "@/api/candidate/candidateModel";
 
 export const candidates: Candidate[] = [
   {
@@ -24,8 +24,13 @@ export const candidates: Candidate[] = [
 ];
 
 export class CandidateRepository {
-  async createAsync(candidateToBeCreated: CandidateDto): Promise<CandidateDto> {
-    candidates.push({ id: Date.now(), ...candidateToBeCreated });
+  async createAsync(candidateToBeCreated: CreateCandidateDto): Promise<CreateCandidateDto> {
+    candidates.push({
+      id: Date.now(),
+      ...candidateToBeCreated,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    });
     return candidateToBeCreated;
   }
 

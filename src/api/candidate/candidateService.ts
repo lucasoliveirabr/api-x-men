@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import type { Candidate, CandidateDto } from "@/api/candidate/candidateModel";
+import type { Candidate, CreateCandidateDto } from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 // import { DatabaseService } from "@common/database/databaseService";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -13,14 +13,14 @@ export class CandidateService {
     this.candidateRepository = repository;
   }
 
-  async create(candidateToBeCreated: CandidateDto): Promise<ServiceResponse<CandidateDto | null>> {
+  async create(candidateToBeCreated: CreateCandidateDto): Promise<ServiceResponse<CreateCandidateDto | null>> {
     try {
       const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
-      return ServiceResponse.success<CandidateDto>("Candidate created", candidate);
+      return ServiceResponse.success<CreateCandidateDto>("Candidate successfully created.", candidate, StatusCodes.CREATED);
     } catch (ex) {
-      const errorMessage = `Error creating candidate ${candidateToBeCreated}:, ${(ex as Error).message}`;
+      const errorMessage = `Error while creating a candidate ${candidateToBeCreated}:, ${(ex as Error).message}`;
       logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while creating candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.failure("An error occurred while creating the candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -28,14 +28,14 @@ export class CandidateService {
     try {
       const candidates = await this.candidateRepository.findAllAsync();
       if (!candidates || candidates.length === 0) {
-        return ServiceResponse.failure("No candidates found", null, StatusCodes.NOT_FOUND);
+        return ServiceResponse.failure("No candidates found.", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<Candidate[]>("Candidates found", candidates);
+      return ServiceResponse.success<Candidate[]>("All candidates successfully found.", candidates, StatusCodes.OK);
     } catch (ex) {
-      const errorMessage = `Error finding all candidates: $${(ex as Error).message}`;
+      const errorMessage = `Error while finding all candidates: $${(ex as Error).message}`;
       logger.error(errorMessage);
       return ServiceResponse.failure(
-        "An error occurred while retrieving candidates.",
+        "An error occurred while retrieving all candidates.",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR,
       );
@@ -46,13 +46,13 @@ export class CandidateService {
     try {
       const candidate = await this.candidateRepository.findByIdAsync(id);
       if (!candidate) {
-        return ServiceResponse.failure("Candidate not found", null, StatusCodes.NOT_FOUND);
+        return ServiceResponse.failure("Candidate not found.", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<Candidate>("Candidate found", candidate);
+      return ServiceResponse.success<Candidate>("Candidate successfully found.", candidate, StatusCodes.OK);
     } catch (ex) {
-      const errorMessage = `Error finding candidate with id ${id}:, ${(ex as Error).message}`;
+      const errorMessage = `Error while finding the candidate with id ${id}:, ${(ex as Error).message}`;
       logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while finding candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.failure("An error occurred while finding the candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 }

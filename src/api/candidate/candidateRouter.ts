@@ -2,37 +2,100 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import express, { type Router } from "express";
 import { z } from "zod";
 
-import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
-import { GetCandidateSchema, CandidateSchema } from "@/api/candidate/candidateModel";
+import { createApiResponses } from "@/api-docs/openAPIResponseBuilders";
+import { CandidateSchema, CreateCandidateDtoSchema, GetCandidateSchema, CreateCandidateSchema } from "@/api/candidate/candidateModel";
 import { validateRequest } from "@/common/utils/httpHandlers";
 import { candidateController } from "./candidateController";
+import { StatusCodes } from "http-status-codes";
 
 export const candidateRegistry = new OpenAPIRegistry();
 export const candidateRouter: Router = express.Router();
 
 candidateRegistry.register("Candidate", CandidateSchema);
 
+candidateRouter.post("/", validateRequest(CreateCandidateSchema), candidateController.createCandidate);
 candidateRegistry.registerPath({
   method: "post",
   path: "/candidates",
+  operationId: "createCandidates",
+  description: "Create a candidate.",
+  summary: "Create Candidate",
   tags: ["Candidate"],
-  responses: createApiResponse(z.array(CandidateSchema), "Success"),
+  request: {
+    body: {
+      content: {
+        "application/json": { schema: CreateCandidateSchema.shape.body }
+      }
+    }
+  },
+  responses: createApiResponses([
+    {
+      statusCode: StatusCodes.CREATED,
+      description: "Candidate successfully created.",
+      schema: CreateCandidateDtoSchema,
+    },
+    {
+      statusCode: StatusCodes.BAD_REQUEST,
+      description: "Invalid data supplied.",
+    },
+    {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      description: "An error occurred while creating the candidate.",
+    },
+  ]),
 });
-candidateRouter.post("/", candidateController.createCandidate);
 
+candidateRouter.get("/", candidateController.getCandidates);
 candidateRegistry.registerPath({
   method: "get",
   path: "/candidates",
+  operationId: "findAllCandidates",
+  description: "Retrieve all candidates.",
+  summary: "Get all Candidates",
   tags: ["Candidate"],
-  responses: createApiResponse(z.array(CandidateSchema), "Success"),
+  responses: createApiResponses([
+    {
+      statusCode: StatusCodes.OK,
+      description: "All candidates successfully found.",
+      schema: z.array(CandidateSchema),
+    },
+    {
+      statusCode: StatusCodes.NOT_FOUND,
+      description: "No candidates found.",
+    },
+    {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      description: "An error occurred while retrieving all candidates.",
+    },
+  ]),
 });
-candidateRouter.get("/", candidateController.getCandidates);
 
+candidateRouter.get("/:id", validateRequest(GetCandidateSchema), candidateController.getCandidate);
 candidateRegistry.registerPath({
   method: "get",
   path: "/candidates/{id}",
+  operationId: "findCandidateById",
+  description: "Retrieve a candidate by their ID.",
+  summary: "Get Candidate",
   tags: ["Candidate"],
   request: { params: GetCandidateSchema.shape.params },
-  responses: createApiResponse(CandidateSchema, "Success"),
+  responses: createApiResponses([
+    {
+      statusCode: StatusCodes.OK,
+      description: "Candidate successfully found.",
+      schema: CandidateSchema,
+    },
+    {
+      statusCode: StatusCodes.BAD_REQUEST,
+      description: "Invalid input: ID must be a numeric value, ID must be a positive number.",
+    },
+    {
+      statusCode: StatusCodes.NOT_FOUND,
+      description: "Candidate not found.",
+    },
+    {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      description: "An error occurred while finding the candidate.",
+    },
+  ]),
 });
-candidateRouter.get("/:id", validateRequest(GetCandidateSchema), candidateController.getCandidate);
