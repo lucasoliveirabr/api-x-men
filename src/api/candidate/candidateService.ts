@@ -16,11 +16,19 @@ export class CandidateService {
   async create(candidateToBeCreated: CreateCandidateDto): Promise<ServiceResponse<CreateCandidateDto | null>> {
     try {
       const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
-      return ServiceResponse.success<CreateCandidateDto>("Candidate successfully created.", candidate, StatusCodes.CREATED);
+      return ServiceResponse.success<CreateCandidateDto>(
+        "Candidate successfully created.",
+        candidate,
+        StatusCodes.CREATED,
+      );
     } catch (ex) {
       const errorMessage = `Error while creating a candidate ${candidateToBeCreated}:, ${(ex as Error).message}`;
       logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while creating the candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.failure(
+        "An error occurred while creating the candidate.",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -52,7 +60,11 @@ export class CandidateService {
     } catch (ex) {
       const errorMessage = `Error while finding the candidate with id ${id}:, ${(ex as Error).message}`;
       logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while finding the candidate.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.failure(
+        "An error occurred while finding the candidate.",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

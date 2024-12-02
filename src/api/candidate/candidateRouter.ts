@@ -3,10 +3,15 @@ import express, { type Router } from "express";
 import { z } from "zod";
 
 import { createApiResponses } from "@/api-docs/openAPIResponseBuilders";
-import { CandidateSchema, CreateCandidateDtoSchema, GetCandidateSchema, CreateCandidateSchema } from "@/api/candidate/candidateModel";
+import {
+  CandidateSchema,
+  CreateCandidateDtoSchema,
+  CreateCandidateSchema,
+  GetCandidateSchema,
+} from "@/api/candidate/candidateModel";
 import { validateRequest } from "@/common/utils/httpHandlers";
-import { candidateController } from "./candidateController";
 import { StatusCodes } from "http-status-codes";
+import { candidateController } from "./candidateController";
 
 export const candidateRegistry = new OpenAPIRegistry();
 export const candidateRouter: Router = express.Router();
@@ -24,9 +29,9 @@ candidateRegistry.registerPath({
   request: {
     body: {
       content: {
-        "application/json": { schema: CreateCandidateSchema.shape.body }
-      }
-    }
+        "application/json": { schema: CreateCandidateSchema.shape.body },
+      },
+    },
   },
   responses: createApiResponses([
     {

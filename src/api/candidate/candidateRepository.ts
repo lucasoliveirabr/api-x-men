@@ -29,7 +29,7 @@ export class CandidateRepository {
       id: Date.now(),
       ...candidateToBeCreated,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
     return candidateToBeCreated;
   }

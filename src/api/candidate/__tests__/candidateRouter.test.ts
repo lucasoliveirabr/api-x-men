@@ -18,7 +18,9 @@ describe("Candidate API Endpoints", () => {
       expect(responseBody.success).toBeTruthy();
       expect(responseBody.message).toContain("All candidates successfully found.");
       expect(responseBody.responseObject.length).toEqual(candidates.length);
-      responseBody.responseObject.forEach((candidate, index) => compareCandidates(candidates[index] as Candidate, candidate));
+      responseBody.responseObject.forEach((candidate, index) =>
+        compareCandidates(candidates[index] as Candidate, candidate),
+      );
     });
   });
 
@@ -64,7 +66,9 @@ describe("Candidate API Endpoints", () => {
       // Assert
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toContain("Invalid input: ID must be a numeric value, ID must be a positive number.");
+      expect(responseBody.message).toContain(
+        "Invalid input: ID must be a numeric value, ID must be a positive number.",
+      );
       expect(responseBody.responseObject).toBeNull();
     });
   });

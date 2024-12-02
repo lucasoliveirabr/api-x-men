@@ -1,5 +1,5 @@
-import { z } from "zod";
 import { commonValidations } from "@/common/utils/commonValidation";
+import { z } from "zod";
 
 export type Candidate = z.infer<typeof CandidateSchema>;
 export const CandidateSchema = z.object({
@@ -7,12 +7,7 @@ export const CandidateSchema = z.object({
   name: z.string().max(50),
   email: z.string().email().max(50),
   abilities: z.string().max(500),
-  position: z.enum([
-    "Desenvolvedor Front End",
-    "Desenvolvedor Back End",
-    "Desenvolvedor Full Stack",
-    "UX Designer"
-  ]),
+  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
   aboutMe: z.string().max(2500),
   createdAt: z.date(),
   updatedAt: z.date(),
@@ -23,12 +18,7 @@ export const CreateCandidateDtoSchema = z.object({
   name: z.string().max(50),
   email: z.string().email().max(50),
   abilities: z.string().max(500),
-  position: z.enum([
-    "Desenvolvedor Front End",
-    "Desenvolvedor Back End",
-    "Desenvolvedor Full Stack",
-    "UX Designer"
-  ]),
+  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
   aboutMe: z.string().max(2500),
 });
 
