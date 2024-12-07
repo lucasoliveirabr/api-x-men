@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes";
 import type { Mock } from "vitest";
 
-import type { Candidate } from "@/api/candidate/candidateModel";
+import type { Candidate, CreateCandidateDto } from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 import { CandidateService } from "@/api/candidate/candidateService";
 
@@ -39,15 +39,73 @@ describe("candidateService", () => {
     candidateServiceInstance = new CandidateService(candidateRepositoryInstance);
   });
 
+  describe("create", () => {
+    it("returns a candidate for valid data", async () => {
+      const testCandidate: CreateCandidateDto = {
+        name: "Michael",
+        email: "michael@example.com",
+        abilities: "Habilidade1, Habilidade2, Habilidade3",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa habilidosa",
+      };
+      const mockCandidate = mockCandidates.push({
+        id: Date.now(),
+        ...testCandidate,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      (candidateRepositoryInstance.createAsync as Mock).mockReturnValue(mockCandidate);
+
+      const result = await candidateServiceInstance.create(testCandidate);
+
+      expect(result.statusCode).toEqual(StatusCodes.CREATED);
+      expect(result.success).toBeTruthy();
+      expect(result.message).equals("Candidate successfully created.");
+      expect(result.responseObject).toEqual(mockCandidate);
+    });
+
+    it("returns a bad request error for invalid data", async () => {
+      const testCandidate: CreateCandidateDto = {
+        name: "Michael",
+        email: "michaelexamplecom",
+        abilities: "Habilidade1, Habilidade2, Habilidade3",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa habilidosa",
+      };
+
+      const result = await candidateServiceInstance.create(testCandidate);
+
+      expect(result.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(result.success).toBeFalsy();
+      expect(result.message).toContain("Invalid data supplied:");
+      expect(result.responseObject).toBeNull();
+    });
+
+    it("returns a internal server error", async () => {
+      const testCandidate: CreateCandidateDto = {
+        name: "Michael",
+        email: "michael@example.com",
+        abilities: "Habilidade1, Habilidade2, Habilidade3",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa habilidosa",
+      };
+      (candidateRepositoryInstance.createAsync as Mock).mockRejectedValue(new Error("Database error"));
+
+      const result = await candidateServiceInstance.create(testCandidate);
+
+      expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(result.success).toBeFalsy();
+      expect(result.message).equals("An error occurred while creating the candidate.");
+      expect(result.responseObject).toBeNull();
+    });
+  });
+
   describe("findAll", () => {
-    it("return all candidates", async () => {
-      // Arrange
+    it("returns all candidates", async () => {
       (candidateRepositoryInstance.findAllAsync as Mock).mockReturnValue(mockCandidates);
 
-      // Act
       const result = await candidateServiceInstance.findAll();
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.OK);
       expect(result.success).toBeTruthy();
       expect(result.message).equals("All candidates successfully found.");
@@ -55,27 +113,21 @@ describe("candidateService", () => {
     });
 
     it("returns a not found error for no candidates found", async () => {
-      // Arrange
       (candidateRepositoryInstance.findAllAsync as Mock).mockReturnValue(null);
 
-      // Act
       const result = await candidateServiceInstance.findAll();
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(result.success).toBeFalsy();
       expect(result.message).equals("No candidates found.");
       expect(result.responseObject).toBeNull();
     });
 
-    it("handles errors for findAllAsync", async () => {
-      // Arrange
+    it("returns a internal server error", async () => {
       (candidateRepositoryInstance.findAllAsync as Mock).mockRejectedValue(new Error("Database error"));
 
-      // Act
       const result = await candidateServiceInstance.findAll();
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(result.success).toBeFalsy();
       expect(result.message).equals("An error occurred while retrieving all candidates.");
@@ -85,45 +137,48 @@ describe("candidateService", () => {
 
   describe("findById", () => {
     it("returns a candidate for a valid ID", async () => {
-      // Arrange
       const testId = 1;
       const mockCandidate = mockCandidates.find((candidate) => candidate.id === testId);
       (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(mockCandidate);
 
-      // Act
       const result = await candidateServiceInstance.findById(testId);
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.OK);
       expect(result.success).toBeTruthy();
       expect(result.message).equals("Candidate successfully found.");
       expect(result.responseObject).toEqual(mockCandidate);
     });
 
+    it("returns a bad request error for invalid ID", async () => {
+      const testId = "a";
+      const testIdAsNumber = Number.parseInt(testId, 10);
+
+      const result = await candidateServiceInstance.findById(testIdAsNumber);
+
+      expect(result.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(result.success).toBeFalsy();
+      expect(result.message).equals("Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.");
+      expect(result.responseObject).toBeNull();
+    });
+
     it("returns a not found error for non-existent ID", async () => {
-      // Arrange
       const testId = 1;
       (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(null);
 
-      // Act
       const result = await candidateServiceInstance.findById(testId);
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(result.success).toBeFalsy();
       expect(result.message).equals("Candidate not found.");
       expect(result.responseObject).toBeNull();
     });
 
-    it("handles errors for findByIdAsync", async () => {
-      // Arrange
+    it("returns a internal server error", async () => {
       const testId = 1;
       (candidateRepositoryInstance.findByIdAsync as Mock).mockRejectedValue(new Error("Database error"));
 
-      // Act
       const result = await candidateServiceInstance.findById(testId);
 
-      // Assert
       expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(result.success).toBeFalsy();
       expect(result.message).equals("An error occurred while finding the candidate.");

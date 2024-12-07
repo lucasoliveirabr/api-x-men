@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import type { Candidate, CreateCandidateDto } from "@/api/candidate/candidateModel";
+import { CreateCandidateDtoSchema, type Candidate, type CreateCandidateDto } from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 // import { DatabaseService } from "@common/database/databaseService";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -15,6 +15,19 @@ export class CandidateService {
 
   async create(candidateToBeCreated: CreateCandidateDto): Promise<ServiceResponse<CreateCandidateDto | null>> {
     try {
+      const validationResult = CreateCandidateDtoSchema.safeParse(candidateToBeCreated);
+      if (!validationResult.success) {
+        const errorMessages = validationResult.error.errors
+          .map((error) => `${error.path.join(".")}: ${error.message}`)
+          .join("; ");
+        logger.error(`Invalid data supplied: ${errorMessages}.`);
+        return ServiceResponse.failure(
+          `Invalid data supplied: ${errorMessages}.`,
+          null,
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
       const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
       return ServiceResponse.success<CreateCandidateDto>(
         "Candidate successfully created.",
@@ -52,10 +65,19 @@ export class CandidateService {
 
   async findById(id: number): Promise<ServiceResponse<Candidate | null>> {
     try {
+      if (Number.isNaN(id)) {
+        return ServiceResponse.failure(
+          "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
+          null,
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
       const candidate = await this.candidateRepository.findByIdAsync(id);
       if (!candidate) {
         return ServiceResponse.failure("Candidate not found.", null, StatusCodes.NOT_FOUND);
       }
+      
       return ServiceResponse.success<Candidate>("Candidate successfully found.", candidate, StatusCodes.OK);
     } catch (ex) {
       const errorMessage = `Error while finding the candidate with id ${id}:, ${(ex as Error).message}`;

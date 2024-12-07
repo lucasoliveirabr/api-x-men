@@ -92,7 +92,7 @@ candidateRegistry.registerPath({
     },
     {
       statusCode: StatusCodes.BAD_REQUEST,
-      description: "Invalid input: ID must be a numeric value, ID must be a positive number.",
+      description: "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
     },
     {
       statusCode: StatusCodes.NOT_FOUND,

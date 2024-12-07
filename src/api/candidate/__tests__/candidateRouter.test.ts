@@ -67,7 +67,7 @@ describe("Candidate API Endpoints", () => {
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(responseBody.success).toBeFalsy();
       expect(responseBody.message).toContain(
-        "Invalid input: ID must be a numeric value, ID must be a positive number.",
+        "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
       );
       expect(responseBody.responseObject).toBeNull();
     });
