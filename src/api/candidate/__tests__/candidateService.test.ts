@@ -150,7 +150,7 @@ describe("candidateService", () => {
     });
 
     it("returns a bad request error for invalid ID", async () => {
-      const testId = "a";
+      const testId = "abc";
       const testIdAsNumber = Number.parseInt(testId, 10);
 
       const result = await candidateServiceInstance.findById(testIdAsNumber);
@@ -164,7 +164,7 @@ describe("candidateService", () => {
     });
 
     it("returns a not found error for non-existent ID", async () => {
-      const testId = 1;
+      const testId = Number.MAX_SAFE_INTEGER;
       (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(null);
 
       const result = await candidateServiceInstance.findById(testId);
