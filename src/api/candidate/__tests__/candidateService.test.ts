@@ -157,7 +157,9 @@ describe("candidateService", () => {
 
       expect(result.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals("Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.");
+      expect(result.message).equals(
+        "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
+      );
       expect(result.responseObject).toBeNull();
     });
 

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { CreateCandidateDtoSchema, type Candidate, type CreateCandidateDto } from "@/api/candidate/candidateModel";
+import { type Candidate, type CreateCandidateDto, CreateCandidateDtoSchema } from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 // import { DatabaseService } from "@common/database/databaseService";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -21,11 +21,7 @@ export class CandidateService {
           .map((error) => `${error.path.join(".")}: ${error.message}`)
           .join("; ");
         logger.error(`Invalid data supplied: ${errorMessages}.`);
-        return ServiceResponse.failure(
-          `Invalid data supplied: ${errorMessages}.`,
-          null,
-          StatusCodes.BAD_REQUEST,
-        );
+        return ServiceResponse.failure(`Invalid data supplied: ${errorMessages}.`, null, StatusCodes.BAD_REQUEST);
       }
 
       const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
@@ -77,7 +73,7 @@ export class CandidateService {
       if (!candidate) {
         return ServiceResponse.failure("Candidate not found.", null, StatusCodes.NOT_FOUND);
       }
-      
+
       return ServiceResponse.success<Candidate>("Candidate successfully found.", candidate, StatusCodes.OK);
     } catch (ex) {
       const errorMessage = `Error while finding the candidate with id ${id}:, ${(ex as Error).message}`;
