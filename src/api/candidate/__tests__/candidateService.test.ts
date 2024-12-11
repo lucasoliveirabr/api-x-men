@@ -199,7 +199,7 @@ describe("candidateService", () => {
       };
       const mockCandidate = mockCandidates.find((candidate) => candidate.id === testId);
       (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(mockCandidate);
-      
+
       mockCandidates = mockCandidates.map((candidate) =>
         candidate.id === testId ? { ...candidate, ...testCandidate, updatedAt: new Date() } : candidate,
       );
