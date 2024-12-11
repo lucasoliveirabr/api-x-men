@@ -22,6 +22,14 @@ export const CreateCandidateDtoSchema = z.object({
   aboutMe: z.string().max(2500),
 });
 
+export type UpdateCandidateDto = z.infer<typeof UpdateCandidateDtoSchema>;
+export const UpdateCandidateDtoSchema = z.object({
+  name: z.string().max(50),
+  abilities: z.string().max(500),
+  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
+  aboutMe: z.string().max(2500),
+});
+
 export const CreateCandidateSchema = z.object({
   body: z.object({
     name: commonValidations.name,
@@ -34,4 +42,14 @@ export const CreateCandidateSchema = z.object({
 
 export const GetCandidateSchema = z.object({
   params: z.object({ id: commonValidations.id }),
+});
+
+export const UpdateCandidateSchema = z.object({
+  params: z.object({ id: commonValidations.id }),
+  body: z.object({
+    name: commonValidations.name,
+    abilities: commonValidations.abilities,
+    position: commonValidations.position,
+    aboutMe: commonValidations.aboutMe,
+  }),
 });

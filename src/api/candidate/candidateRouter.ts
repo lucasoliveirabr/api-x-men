@@ -8,6 +8,8 @@ import {
   CreateCandidateDtoSchema,
   CreateCandidateSchema,
   GetCandidateSchema,
+  UpdateCandidateDtoSchema,
+  UpdateCandidateSchema,
 } from "@/api/candidate/candidateModel";
 import { validateRequest } from "@/common/utils/httpHandlers";
 import { StatusCodes } from "http-status-codes";
@@ -101,6 +103,44 @@ candidateRegistry.registerPath({
     {
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       description: "An error occurred while finding the candidate.",
+    },
+  ]),
+});
+
+candidateRouter.put("/:id", validateRequest(UpdateCandidateSchema), candidateController.updateCandidate);
+candidateRegistry.registerPath({
+  method: "put",
+  path: "/candidates/{id}",
+  operationId: "updateCandidates",
+  description: "Update a candidate by their ID.",
+  summary: "Update Candidate",
+  tags: ["Candidate"],
+  request: {
+    params: UpdateCandidateSchema.shape.params,
+    body: {
+      required: true,
+      content: {
+        "application/json": { schema: UpdateCandidateSchema.shape.body },
+      },
+    },
+  },
+  responses: createApiResponses([
+    {
+      statusCode: StatusCodes.OK,
+      description: "Candidate successfully updated.",
+      schema: z.null(),
+    },
+    {
+      statusCode: StatusCodes.BAD_REQUEST,
+      description: "Invalid data supplied.",
+    },
+    {
+      statusCode: StatusCodes.NOT_FOUND,
+      description: "Candidate not found.",
+    },
+    {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      description: "An error occurred while updating the candidate.",
     },
   ]),
 });

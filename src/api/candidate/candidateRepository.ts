@@ -1,6 +1,6 @@
-import type { Candidate, CreateCandidateDto } from "@/api/candidate/candidateModel";
+import type { Candidate, CreateCandidateDto, UpdateCandidateDto } from "@/api/candidate/candidateModel";
 
-export const candidates: Candidate[] = [
+export let candidates: Candidate[] = [
   {
     id: 1,
     name: "Alice",
@@ -40,5 +40,11 @@ export class CandidateRepository {
 
   async findByIdAsync(id: number): Promise<Candidate | null> {
     return candidates.find((candidate) => candidate.id === id) || null;
+  }
+
+  async updateAsync(id: number, newCandidateData: UpdateCandidateDto) {
+    candidates = candidates.map((candidate) =>
+      candidate.id === id ? { ...candidate, ...newCandidateData, updatedAt: new Date() } : candidate,
+    );
   }
 }

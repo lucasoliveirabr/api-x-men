@@ -1,6 +1,12 @@
 import { StatusCodes } from "http-status-codes";
 
-import { type Candidate, type CreateCandidateDto, CreateCandidateDtoSchema } from "@/api/candidate/candidateModel";
+import {
+  type Candidate,
+  type CreateCandidateDto,
+  CreateCandidateDtoSchema,
+  type UpdateCandidateDto,
+  UpdateCandidateDtoSchema,
+} from "@/api/candidate/candidateModel";
 import { CandidateRepository } from "@/api/candidate/candidateRepository";
 // import { DatabaseService } from "@common/database/databaseService";
 import { ServiceResponse } from "@/common/models/serviceResponse";
@@ -80,6 +86,43 @@ export class CandidateService {
       logger.error(errorMessage);
       return ServiceResponse.failure(
         "An error occurred while finding the candidate.",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async update(id: number, newCandidateData: UpdateCandidateDto): Promise<ServiceResponse<null>> {
+    try {
+      if (Number.isNaN(id)) {
+        return ServiceResponse.failure(
+          "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
+          null,
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
+      const validationResult = UpdateCandidateDtoSchema.safeParse(newCandidateData);
+      if (!validationResult.success) {
+        const errorMessages = validationResult.error.errors
+          .map((error) => `${error.path.join(".")}: ${error.message}`)
+          .join("; ");
+        logger.error(`Invalid data supplied: ${errorMessages}.`);
+        return ServiceResponse.failure(`Invalid data supplied: ${errorMessages}.`, null, StatusCodes.BAD_REQUEST);
+      }
+
+      const candidate = await this.candidateRepository.findByIdAsync(id);
+      if (!candidate) {
+        return ServiceResponse.failure("Candidate not found.", null, StatusCodes.NOT_FOUND);
+      }
+
+      await this.candidateRepository.updateAsync(id, newCandidateData);
+      return ServiceResponse.success<null>("Candidate successfully updated.", null, StatusCodes.OK);
+    } catch (ex) {
+      const errorMessage = `Error while updating the candidate with id ${id} and their new data ${newCandidateData}:, ${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return ServiceResponse.failure(
+        "An error occurred while updating the candidate.",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR,
       );
