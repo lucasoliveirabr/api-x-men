@@ -31,11 +31,7 @@ export class CandidateService {
       }
 
       const candidate: Candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
-      return ServiceResponse.success<Candidate>(
-        "Candidate successfully created.",
-        candidate,
-        StatusCodes.CREATED,
-      );
+      return ServiceResponse.success<Candidate>("Candidate successfully created.", candidate, StatusCodes.CREATED);
     } catch (ex) {
       const errorMessage = `Error while creating a candidate ${candidateToBeCreated}:, ${(ex as Error).message}`;
       logger.error(errorMessage);

@@ -5,10 +5,8 @@ import { z } from "zod";
 import { createApiResponses } from "@/api-docs/openAPIResponseBuilders";
 import {
   CandidateSchema,
-  CreateCandidateDtoSchema,
   CreateCandidateSchema,
   GetCandidateSchema,
-  UpdateCandidateDtoSchema,
   UpdateCandidateSchema,
 } from "@/api/candidate/candidateModel";
 import { validateRequest } from "@/common/utils/httpHandlers";
@@ -24,7 +22,7 @@ candidateRouter.post("/", validateRequest(CreateCandidateSchema), candidateContr
 candidateRegistry.registerPath({
   method: "post",
   path: "/candidates",
-  operationId: "createCandidates",
+  operationId: "createCandidate",
   description: "Create a candidate.",
   summary: "Create Candidate",
   tags: ["Candidate"],
@@ -95,7 +93,7 @@ candidateRegistry.registerPath({
     },
     {
       statusCode: StatusCodes.BAD_REQUEST,
-      description: "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
+      description: "Invalid data supplied.",
     },
     {
       statusCode: StatusCodes.NOT_FOUND,
@@ -112,7 +110,7 @@ candidateRouter.put("/:id", validateRequest(UpdateCandidateSchema), candidateCon
 candidateRegistry.registerPath({
   method: "put",
   path: "/candidates/{id}",
-  operationId: "updateCandidates",
+  operationId: "updateCandidate",
   description: "Update a candidate by their ID.",
   summary: "Update Candidate",
   tags: ["Candidate"],

@@ -74,7 +74,7 @@ describe("Candidate API Endpoints", () => {
       compareCandidates(expectedCandidate, responseBody.responseObject);
     });
 
-    it("should return a bad request error for invalid ID", async () => {
+    it("should return a bad request error for invalid data", async () => {
       const invalidInput = "abc";
 
       const response = await request(app).get(`/candidates/${invalidInput}`);
@@ -120,7 +120,7 @@ describe("Candidate API Endpoints", () => {
       expect(responseBody.responseObject).toBeNull();
     });
 
-    it("should return a bad request error for invalid ID", async () => {
+    it("should return a bad request error for invalid data", async () => {
       const testId = "abc";
       const testCandidate: UpdateCandidateDto = {
         name: "Lorem ipsum dolor sit amet, consectetuer adipiscing",

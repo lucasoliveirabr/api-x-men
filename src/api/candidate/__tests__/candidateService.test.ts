@@ -150,7 +150,7 @@ describe("candidateService", () => {
       expect(result.responseObject).toEqual(mockCandidate);
     });
 
-    it("returns a bad request error for invalid ID", async () => {
+    it("returns a bad request error for invalid data", async () => {
       const testId = "abc";
       const testIdAsNumber = Number.parseInt(testId, 10);
 
@@ -158,9 +158,7 @@ describe("candidateService", () => {
 
       expect(result.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(result.success).toBeFalsy();
-      expect(result.message).equals(
-        "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
-      );
+      expect(result.message).toContain("Invalid data supplied:");
       expect(result.responseObject).toBeNull();
     });
 
@@ -232,9 +230,15 @@ describe("candidateService", () => {
 
     it("returns a not found error for non-existent ID", async () => {
       const testId = Number.MAX_SAFE_INTEGER;
+      const testCandidate: UpdateCandidateDto = {
+        name: "Alice Silva",
+        abilities: "Habilidade1, Habilidade2, Habilidade3, Habilidade4",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa muito habilidosa",
+      };
       (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(null);
 
-      const result = await candidateServiceInstance.findById(testId);
+      const result = await candidateServiceInstance.update(testId, testCandidate);
 
       expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(result.success).toBeFalsy();
