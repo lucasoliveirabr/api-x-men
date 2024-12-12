@@ -1,12 +1,49 @@
 import { StatusCodes } from "http-status-codes";
 import request from "supertest";
 
-import type { Candidate, UpdateCandidateDto } from "@/api/candidate/candidateModel";
+import type { Candidate, CreateCandidateDto, UpdateCandidateDto } from "@/api/candidate/candidateModel";
 import { candidates } from "@/api/candidate/candidateRepository";
 import type { ServiceResponse } from "@/common/models/serviceResponse";
 import { app } from "@/server";
 
 describe("Candidate API Endpoints", () => {
+  describe("POST /candidates", () => {
+    it("should return a candidate for valid data", async () => {
+      const testCandidate: CreateCandidateDto = {
+        name: "Michael",
+        email: "michael@example.com",
+        abilities: "Habilidade1, Habilidade2, Habilidade3",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa habilidosa",
+      };
+
+      const response = await request(app).post("/candidates").send(testCandidate);
+      const responseBody: ServiceResponse<Candidate> = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.CREATED);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).equals("Candidate successfully created.");
+    });
+
+    it("should return a bad request error for invalid data", async () => {
+      const testCandidate: CreateCandidateDto = {
+        name: "Michael",
+        email: "michaelexamplecom",
+        abilities: "Habilidade1, Habilidade2, Habilidade3",
+        position: "Desenvolvedor Full Stack",
+        aboutMe: "Pessoa habilidosa",
+      };
+
+      const response = await request(app).post("/candidates").send(testCandidate);
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toContain("Invalid data supplied:");
+      expect(responseBody.responseObject).toBeNull();
+    });
+  });
+
   describe("GET /candidates", () => {
     it("should return a list of all candidates", async () => {
       const response = await request(app).get("/candidates");
@@ -75,7 +112,7 @@ describe("Candidate API Endpoints", () => {
       };
 
       const response = await request(app).put(`/candidates/${testId}`).send(testCandidate);
-      const responseBody: ServiceResponse<Candidate> = response.body;
+      const responseBody: ServiceResponse = response.body;
 
       expect(response.statusCode).toEqual(StatusCodes.OK);
       expect(responseBody.success).toBeTruthy();
