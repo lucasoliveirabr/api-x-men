@@ -19,7 +19,7 @@ export class CandidateService {
     this.candidateRepository = repository;
   }
 
-  async create(candidateToBeCreated: CreateCandidateDto): Promise<ServiceResponse<CreateCandidateDto | null>> {
+  async create(candidateToBeCreated: CreateCandidateDto): Promise<ServiceResponse<Candidate | null>> {
     try {
       const validationResult = CreateCandidateDtoSchema.safeParse(candidateToBeCreated);
       if (!validationResult.success) {
@@ -31,7 +31,7 @@ export class CandidateService {
       }
 
       const candidate: Candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
-      return ServiceResponse.success<CreateCandidateDto>(
+      return ServiceResponse.success<Candidate>(
         "Candidate successfully created.",
         candidate,
         StatusCodes.CREATED,
@@ -117,7 +117,7 @@ export class CandidateService {
       }
 
       await this.candidateRepository.updateAsync(id, newCandidateData);
-      return ServiceResponse.success<null>("Candidate successfully updated.", null, StatusCodes.OK);
+      return ServiceResponse.success("Candidate successfully updated.", null, StatusCodes.OK);
     } catch (ex) {
       const errorMessage = `Error while updating the candidate with id ${id} and their new data ${newCandidateData}:, ${(ex as Error).message}`;
       logger.error(errorMessage);
