@@ -34,7 +34,7 @@ export class CandidateRepository {
     return candidateToBeCreated;
   }
 
-  async findAllAsync(): Promise<Candidate[]> {
+  async findAllAsync(): Promise<Candidate[] | null> {
     return candidates;
   }
 

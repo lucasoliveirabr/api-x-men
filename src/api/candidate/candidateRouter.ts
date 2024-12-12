@@ -30,6 +30,7 @@ candidateRegistry.registerPath({
   tags: ["Candidate"],
   request: {
     body: {
+      required: true,
       content: {
         "application/json": { schema: CreateCandidateSchema.shape.body },
       },
