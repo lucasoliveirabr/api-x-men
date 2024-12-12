@@ -24,14 +24,15 @@ export let candidates: Candidate[] = [
 ];
 
 export class CandidateRepository {
-  async createAsync(candidateToBeCreated: CreateCandidateDto): Promise<CreateCandidateDto> {
-    candidates.push({
+  async createAsync(candidateToBeCreated: CreateCandidateDto): Promise<Candidate> {
+    const newCandidate: Candidate = {
       id: Date.now(),
       ...candidateToBeCreated,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });
-    return candidateToBeCreated;
+    };
+    candidates.push(newCandidate);
+    return newCandidate;
   }
 
   async findAllAsync(): Promise<Candidate[] | null> {

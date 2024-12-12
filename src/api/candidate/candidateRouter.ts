@@ -40,7 +40,7 @@ candidateRegistry.registerPath({
     {
       statusCode: StatusCodes.CREATED,
       description: "Candidate successfully created.",
-      schema: CreateCandidateDtoSchema,
+      schema: CandidateSchema,
     },
     {
       statusCode: StatusCodes.BAD_REQUEST,

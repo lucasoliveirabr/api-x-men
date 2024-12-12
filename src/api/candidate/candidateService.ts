@@ -30,7 +30,7 @@ export class CandidateService {
         return ServiceResponse.failure(`Invalid data supplied: ${errorMessages}.`, null, StatusCodes.BAD_REQUEST);
       }
 
-      const candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
+      const candidate: Candidate = await this.candidateRepository.createAsync(candidateToBeCreated);
       return ServiceResponse.success<CreateCandidateDto>(
         "Candidate successfully created.",
         candidate,

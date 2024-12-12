@@ -48,20 +48,21 @@ describe("candidateService", () => {
         position: "Desenvolvedor Full Stack",
         aboutMe: "Pessoa habilidosa",
       };
-      const mockCandidate = mockCandidates.push({
+      const newCandidate: Candidate = {
         id: Date.now(),
         ...testCandidate,
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
-      (candidateRepositoryInstance.createAsync as Mock).mockReturnValue(mockCandidate);
+      };
 
+      mockCandidates.push(newCandidate);
+      (candidateRepositoryInstance.createAsync as Mock).mockReturnValue(newCandidate);
       const result = await candidateServiceInstance.create(testCandidate);
 
       expect(result.statusCode).toEqual(StatusCodes.CREATED);
       expect(result.success).toBeTruthy();
       expect(result.message).equals("Candidate successfully created.");
-      expect(result.responseObject).toEqual(mockCandidate);
+      expect(result.responseObject).toEqual(newCandidate);
     });
 
     it("returns a bad request error for invalid data", async () => {
