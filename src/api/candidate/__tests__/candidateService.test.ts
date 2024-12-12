@@ -264,4 +264,55 @@ describe("candidateService", () => {
       expect(result.responseObject).toBeNull();
     });
   });
+
+  describe("delete", () => {
+    it("returns successfully for valid data", async () => {
+      const testId = 1;
+      const mockCandidate = mockCandidates.find((candidate) => candidate.id === testId);
+      (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(mockCandidate);
+
+      const result = await candidateServiceInstance.delete(testId);
+
+      expect(result.statusCode).toEqual(StatusCodes.OK);
+      expect(result.success).toBeTruthy();
+      expect(result.message).equals("Candidate successfully deleted.");
+      expect(result.responseObject).toBeNull();
+    });
+
+    it("returns a bad request error for invalid data", async () => {
+      const testId = "abc";
+      const testIdAsNumber = Number.parseInt(testId, 10);
+
+      const result = await candidateServiceInstance.delete(testIdAsNumber);
+
+      expect(result.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(result.success).toBeFalsy();
+      expect(result.message).toContain("Invalid data supplied:");
+      expect(result.responseObject).toBeNull();
+    });
+
+    it("returns a not found error for non-existent ID", async () => {
+      const testId = Number.MAX_SAFE_INTEGER;
+      (candidateRepositoryInstance.findByIdAsync as Mock).mockReturnValue(null);
+
+      const result = await candidateServiceInstance.delete(testId);
+
+      expect(result.statusCode).toEqual(StatusCodes.NOT_FOUND);
+      expect(result.success).toBeFalsy();
+      expect(result.message).equals("Candidate not found.");
+      expect(result.responseObject).toBeNull();
+    });
+
+    it("returns a internal server error", async () => {
+      const testId = 1;
+      (candidateRepositoryInstance.findByIdAsync as Mock).mockRejectedValue(new Error("Database error"));
+
+      const result = await candidateServiceInstance.delete(testId);
+
+      expect(result.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+      expect(result.success).toBeFalsy();
+      expect(result.message).equals("An error occurred while deleting the candidate.");
+      expect(result.responseObject).toBeNull();
+    });
+  });
 });

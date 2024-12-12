@@ -25,6 +25,12 @@ class CandidateController {
     const serviceResponse = await candidateService.update(id, req.body);
     return handleServiceResponse(serviceResponse, res);
   };
+
+  public deleteCandidate: RequestHandler = async (req: Request, res: Response) => {
+    const id = Number.parseInt(req.params.id, 10);
+    const serviceResponse = await candidateService.delete(id);
+    return handleServiceResponse(serviceResponse, res);
+  };
 }
 
 export const candidateController = new CandidateController();

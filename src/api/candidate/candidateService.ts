@@ -124,6 +124,34 @@ export class CandidateService {
       );
     }
   }
+
+  async delete(id: number): Promise<ServiceResponse<Candidate | null>> {
+    try {
+      if (Number.isNaN(id)) {
+        return ServiceResponse.failure(
+          "Invalid data supplied: id: ID must be a numeric value, id: ID must be a positive number.",
+          null,
+          StatusCodes.BAD_REQUEST,
+        );
+      }
+
+      const candidate = await this.candidateRepository.findByIdAsync(id);
+      if (!candidate) {
+        return ServiceResponse.failure("Candidate not found.", null, StatusCodes.NOT_FOUND);
+      }
+
+      await this.candidateRepository.deleteAsync(id);
+      return ServiceResponse.success("Candidate successfully deleted.", null, StatusCodes.OK);
+    } catch (ex) {
+      const errorMessage = `Error while deleting the candidate with id ${id}:, ${(ex as Error).message}`;
+      logger.error(errorMessage);
+      return ServiceResponse.failure(
+        "An error occurred while deleting the candidate.",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
 
 export const candidateService = new CandidateService();

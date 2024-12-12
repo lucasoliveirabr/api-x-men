@@ -143,3 +143,33 @@ candidateRegistry.registerPath({
     },
   ]),
 });
+
+candidateRouter.delete("/:id", validateRequest(GetCandidateSchema), candidateController.deleteCandidate);
+candidateRegistry.registerPath({
+  method: "delete",
+  path: "/candidates/{id}",
+  operationId: "deleteCandidate",
+  description: "Delete a candidate by their ID.",
+  summary: "Delete Candidate",
+  tags: ["Candidate"],
+  request: { params: GetCandidateSchema.shape.params },
+  responses: createApiResponses([
+    {
+      statusCode: StatusCodes.OK,
+      description: "Candidate successfully deleted.",
+      schema: z.null(),
+    },
+    {
+      statusCode: StatusCodes.BAD_REQUEST,
+      description: "Invalid data supplied.",
+    },
+    {
+      statusCode: StatusCodes.NOT_FOUND,
+      description: "Candidate not found.",
+    },
+    {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      description: "An error occurred while deleting the candidate.",
+    },
+  ]),
+});

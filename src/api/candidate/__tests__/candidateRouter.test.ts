@@ -156,6 +156,44 @@ describe("Candidate API Endpoints", () => {
       expect(responseBody.responseObject).toBeNull();
     });
   });
+
+  describe("DELETE /candidates/:id", () => {
+    it("should return successfully for valid data", async () => {
+      const testId = 1;
+
+      const response = await request(app).delete(`/candidates/${testId}`);
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).equals("Candidate successfully deleted.");
+      expect(responseBody.responseObject).toBeNull();
+    });
+
+    it("should return a bad request error for invalid data", async () => {
+      const invalidInput = "abc";
+
+      const response = await request(app).delete(`/candidates/${invalidInput}`);
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toContain("Invalid data supplied:");
+      expect(responseBody.responseObject).toBeNull();
+    });
+
+    it("should return a not found error for non-existent ID", async () => {
+      const testId = Number.MAX_SAFE_INTEGER;
+
+      const response = await request(app).delete(`/candidates/${testId}`);
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).equals("Candidate not found.");
+      expect(responseBody.responseObject).toBeNull();
+    });
+  });
 });
 
 function compareCandidates(mockCandidate: Candidate, responseCandidate: Candidate) {

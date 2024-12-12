@@ -48,4 +48,8 @@ export class CandidateRepository {
       candidate.id === id ? { ...candidate, ...newCandidateData, updatedAt: new Date() } : candidate,
     );
   }
+
+  async deleteAsync(id: number) {
+    candidates = candidates.filter((candidate) => candidate.id !== id);
+  }
 }
