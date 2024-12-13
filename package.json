@@ -5,9 +5,9 @@
   "main": "index.ts",
   "private": true,
   "scripts": {
-    "dev": "tsx watch --clear-screen=false src/index.ts | pino-pretty",
+    "dev": "tsx watch --clear-screen=false --env-file=.env src/index.ts | pino-pretty",
     "build": "tsup",
-    "start": "node dist/index.js",
+    "start": "node --env-file=.env dist/index.js",
     "clean": "rimraf dist coverage",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
@@ -18,7 +18,6 @@
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.0.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
     "envalid": "^8.0.0",
     "express": "^4.19.2",
     "express-rate-limit": "^7.2.0",
