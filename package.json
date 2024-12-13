@@ -53,5 +53,8 @@
     "splitting": false,
     "sourcemap": true,
     "clean": true
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.28.1"
   }
 }
