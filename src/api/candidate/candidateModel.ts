@@ -1,55 +1,60 @@
 import { commonValidations } from "@/common/utils/commonValidation";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 
-export type Candidate = z.infer<typeof CandidateSchema>;
-export const CandidateSchema = z.object({
-  id: z.number(),
-  name: z.string().max(50),
-  email: z.string().email().max(50),
-  abilities: z.string().max(500),
-  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
-  aboutMe: z.string().max(2500),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+extendZodWithOpenApi(z);
+
+const { id, name, email, abilities, position, aboutMe, createdAt, updatedAt } = commonValidations;
 
 export type CreateCandidateDto = z.infer<typeof CreateCandidateDtoSchema>;
 export const CreateCandidateDtoSchema = z.object({
-  name: z.string().max(50),
-  email: z.string().email().max(50),
-  abilities: z.string().max(500),
-  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
-  aboutMe: z.string().max(2500),
+  name,
+  email,
+  abilities,
+  position,
+  aboutMe,
+});
+
+export type Candidate = z.infer<typeof CandidateSchema>;
+export const CandidateSchema = z.object({
+  id,
+  name,
+  email,
+  abilities,
+  position,
+  aboutMe,
+  createdAt,
+  updatedAt,
 });
 
 export type UpdateCandidateDto = z.infer<typeof UpdateCandidateDtoSchema>;
 export const UpdateCandidateDtoSchema = z.object({
-  name: z.string().max(50),
-  abilities: z.string().max(500),
-  position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
-  aboutMe: z.string().max(2500),
+  name,
+  abilities,
+  position,
+  aboutMe,
 });
 
 export const CreateCandidateSchema = z.object({
   body: z.object({
-    name: commonValidations.name,
-    email: commonValidations.email,
-    abilities: commonValidations.abilities,
-    position: commonValidations.position,
-    aboutMe: commonValidations.aboutMe,
+    name,
+    email,
+    abilities,
+    position,
+    aboutMe,
   }),
 });
 
 export const GetCandidateSchema = z.object({
-  params: z.object({ id: commonValidations.id }),
+  params: z.object({ id }),
 });
 
 export const UpdateCandidateSchema = z.object({
-  params: z.object({ id: commonValidations.id }),
+  params: z.object({ id }),
   body: z.object({
-    name: commonValidations.name,
-    abilities: commonValidations.abilities,
-    position: commonValidations.position,
-    aboutMe: commonValidations.aboutMe,
+    name,
+    abilities,
+    position,
+    aboutMe,
   }),
 });

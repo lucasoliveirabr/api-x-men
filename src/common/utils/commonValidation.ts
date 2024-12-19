@@ -1,7 +1,4 @@
-import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
-
-extendZodWithOpenApi(z);
 
 export const commonValidations = {
   id: z
@@ -14,4 +11,6 @@ export const commonValidations = {
   abilities: z.string().max(500),
   position: z.enum(["Desenvolvedor Front End", "Desenvolvedor Back End", "Desenvolvedor Full Stack", "UX Designer"]),
   aboutMe: z.string().max(2500),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 };
